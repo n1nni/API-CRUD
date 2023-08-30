@@ -5,16 +5,18 @@ namespace API_CRUD.Service
 {
     public class BookService : IBookService
     {
-        private readonly IMockDbContext? _dbContext;
+        private readonly IMockDbContext _dbContext;
+        private int _idCounter;
 
         public BookService(IMockDbContext dbContext)
         {
             _dbContext = dbContext;
+            _idCounter = _dbContext.Books.Any() ? _dbContext.Books.Max(b => b.Id) + 1 : 1;
         }
 
         public async Task AddBook(Book book)
         {
-            book.Id = _dbContext.Books.Count + 1;
+            book.Id = _idCounter++;
             _dbContext.Books.Add(book);
         }
 
@@ -49,7 +51,6 @@ namespace API_CRUD.Service
             {
                 _dbContext.Books.Remove(book);
             }
-
 
         }
     }
